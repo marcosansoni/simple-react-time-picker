@@ -43,10 +43,12 @@ const Selector = styled.div`
 
 const TimePicker = ({
   TwelveHours,
+  onChange,
 }) => {
   // Need to decide how to do with hour
   // Store always into 24h format and display different according with the choice made
   const [currentHour, setCurrentHour] = useState(moment());
+  const [isAM, setIsAm] = useState(true);
 
   console.log(currentHour);
 
@@ -61,33 +63,58 @@ const TimePicker = ({
 
   console.log(itemsHour);
 
-  const onChange = (t, h) => {
-    console.log({ t, h });
-    // if (t === 'hour') {
-      setCurrentHour(currentHour.set('hour', h));
-      console.log('SET')
-    // }
+  const onChangeFromDropdown = (type, value) => {
+    console.log({ type, value });
+    switch (type) {
+      case 'hour':
+        console.log(isAM);
+        setCurrentHour(moment().set('hour', isAM ? value : value + 12));
+        break;
+      case 'minute':
+        setCurrentHour(moment().set('minute', value));
+        break;
+      case 'twelveHours':
+        console.log(value);
+        // console.log('AMMNAMAMA');
+        if (value === 'AM') {
+          setIsAm(true);
+          setCurrentHour(moment().set('hour', currentHour.hour() - 12));
+        }
+        // console.log('set to false');
+        if (value === 'PM') {
+          setIsAm(false);
+          setCurrentHour(moment().set('hour', currentHour.hour() + 12));
+        }
+        break;
+      default:
+        break;
+    }
+    onChange(currentHour);
   };
 
 
   return (
     <ContainerTime>
       <Title>
-        Select a time
+        Select a time,
+        {' '}
+        {currentHour.format('HH:mm:ss')}
       </Title>
       <Selector>
         <Dropdown
-          onChange={(h) => onChange('hour', h)}
+          onChange={(h) => onChangeFromDropdown('hour', h)}
           type="hour"
           items={itemsHour}
         />
         <Dropdown
           type="minute"
+          onChange={(h) => onChangeFromDropdown('minute', h)}
           items={itemsHour}
         />
         {TwelveHours && (
         <Dropdown
           type="twelveHours"
+          onChange={(h) => onChangeFromDropdown('twelveHours', h)}
           items={['AM', 'PM']}
         />
         )}
@@ -98,10 +125,12 @@ const TimePicker = ({
 
 TimePicker.propTypes = {
   TwelveHours: PropTypes.bool,
+  onChange: PropTypes.func,
 };
 
 TimePicker.defaultProps = {
   TwelveHours: true,
+  onChange: () => {},
 };
 
 export default TimePicker;
