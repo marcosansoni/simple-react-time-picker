@@ -14,7 +14,7 @@ const ContainerTime = styled.div`
   display: flex;
   flex-direction: column;
   width: fit-content;
-  height: fit-content;
+  //height: fit-content;
   border-radius: 4px;
   border: 1px solid ${Color.grayLight};
   margin: 8px;
@@ -49,7 +49,7 @@ const TimePicker = () => {
           </Title>
           <Selector>
             <Dropdown
-              items={[1, 2, 3, 4]}
+              items={[1, 2, 3, 4,5 ,6,7,8,9,10,11]}
             />
           </Selector>
         </ContainerTime>
