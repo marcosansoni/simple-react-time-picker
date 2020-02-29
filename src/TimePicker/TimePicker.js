@@ -79,12 +79,12 @@ const TimePicker = ({
         // console.log('AMMNAMAMA');
         if (value === 'AM') {
           setIsAm(true);
-          setCurrentHour(moment().set('hour', currentHour.hour() - 12));
+          setCurrentHour(moment(currentHour.format('HH:mm'), 'HH:mm').set('hour', currentHour.hour() - 12));
         }
         // console.log('set to false');
         if (value === 'PM') {
           setIsAm(false);
-          setCurrentHour(moment().set('hour', currentHour.hour() + 12));
+          setCurrentHour(moment(currentHour.format('HH:mm'), 'HH:mm').set('hour', currentHour.hour() + 12));
         }
         break;
       default:
