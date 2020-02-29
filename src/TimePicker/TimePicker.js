@@ -56,9 +56,9 @@ const TimePicker = ({
   // console.log(currentHour.minute());
 
   // hours
-  const itemsHour = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  let itemsHour = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   if (!TwelveHours) {
-    itemsHour.push([13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]);
+    itemsHour = itemsHour.concat([13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]);
   }
 
   console.log(itemsHour);
@@ -68,10 +68,11 @@ const TimePicker = ({
     switch (type) {
       case 'hour':
         console.log(isAM);
-        setCurrentHour(moment().set('hour', isAM ? value : value + 12));
+        // setCurrentHour(moment().set('hour', isAM ? value : value + 12));
+        setCurrentHour(moment(currentHour.format('HH:mm'), 'HH:mm').set('hour', isAM ? value : value + 12));
         break;
       case 'minute':
-        setCurrentHour(moment().set('minute', value));
+        setCurrentHour(moment(currentHour.format('HH:mm'), 'HH:mm').set('minute', value));
         break;
       case 'twelveHours':
         console.log(value);
@@ -109,7 +110,7 @@ const TimePicker = ({
         <Dropdown
           type="minute"
           onChange={(h) => onChangeFromDropdown('minute', h)}
-          items={itemsHour}
+          items={Array.from(Array(60).keys())}
         />
         {TwelveHours && (
         <Dropdown
@@ -129,7 +130,7 @@ TimePicker.propTypes = {
 };
 
 TimePicker.defaultProps = {
-  TwelveHours: true,
+  TwelveHours: false,
   onChange: () => {},
 };
 
