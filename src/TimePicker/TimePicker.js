@@ -14,6 +14,7 @@ const ContainerTime = styled.div`
   display: flex;
   flex-direction: column;
   width: fit-content;
+  height: fit-content;
   border-radius: 4px;
   border: 1px solid ${Color.grayLight};
   margin: 8px;
@@ -42,7 +43,6 @@ const Selector = styled.div`
 const TimePicker = () => {
   const a = 5;
   return (
-      <Temp>
         <ContainerTime>
           <Title>
             Select a time
@@ -53,7 +53,6 @@ const TimePicker = () => {
             />
           </Selector>
         </ContainerTime>
-      </Temp>
   );
 };
 
