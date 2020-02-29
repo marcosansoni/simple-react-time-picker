@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import PerfectScrollbar from 'react-perfect-scrollbar';
+import PropTypes from 'prop-types';
 import * as Color from '../styled/colors';
 import DownArrow from './Icon/DownArrow';
 import UpArrow from './Icon/UpArrow';
+
+import 'react-perfect-scrollbar/dist/css/styles.css';
+
 
 const Box = styled.div`
   position: relative;
@@ -38,7 +42,7 @@ const DropMenu = styled.div`
   background-color: ${Color.white};
   border: 1px solid ${Color.grayLight};
   box-sizing: border-box;
-  overflow-y: auto;
+  //overflow: hidden;
 `;
 
 const Cell = styled.div`
@@ -46,39 +50,56 @@ const Cell = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
   //width: fit-content;
-  background-color: ${Color.white};
+  background-color: ${(props) => (props.isSelected ? Color.whiteDark : Color.white)};
   padding: 12px 16px 12px 16px;
-  border-bottom: 1px solid ${Color.grayLight};
+  border-bottom: ${(props) => !props.isLast && `1px solid${Color.grayLight}`};
   box-sizing: border-box;
   cursor:pointer;
-  
-  :last-child{
-    border-bottom: none;
-  }
+ 
+`;
+
+const ContainerPerfectScrollBar = styled.div`
+  position: relative;
+  width: 100%;
+  max-height: 131px;
+  height: ${(props) => (props.items.length > 3 ? '131px' : 'auto')};
 `;
 
 const Dropdown = ({
   items,
+  onChange,
 }) => {
   const [open, setOpen] = useState(false);
   const [indexSelectedItem, setIndexSelectedItem] = useState(0);
 
-  const cells = items && items.length > 0 && items.map((i, index) => index !== indexSelectedItem
-    && (
+  console.log(items)
+
+  useEffect(() => {
+    console.log('Changed into ', items[indexSelectedItem]);
+    onChange(items[indexSelectedItem]);
+  }, [indexSelectedItem]);
+
+  const cells = items && items.length > 0 && items.map((i, index) => (
     <Cell
       onClick={() => {
         setOpen(false);
         setIndexSelectedItem(index);
       }}
+      key={index}
+      isLast={index === items.length - 1}
+      isSelected={index === indexSelectedItem}
     >
       {i}
     </Cell>
-    ));
+  ));
 
   return (
     <>
-      <Box onClick={() => setOpen(!open)}>
+      <Box
+        onClick={() => setOpen(!open)}
+      >
         <ItemDisplayed>
           {items[indexSelectedItem]}
         </ItemDisplayed>
@@ -88,19 +109,31 @@ const Dropdown = ({
             : (<UpArrow />)}
         </ItemDisplayed>
         {open
-        && items
+          && items
           && items.length > 0
-        && (
-        <DropMenu>
-          <PerfectScrollbar>
-            {cells}
-          </PerfectScrollbar>
-        </DropMenu>
-        )}
+          && (
+          <DropMenu>
+            <ContainerPerfectScrollBar
+              items={items}
+            >
+              <PerfectScrollbar>
+                {cells}
+              </PerfectScrollbar>
+            </ContainerPerfectScrollBar>
+          </DropMenu>
+          )}
       </Box>
 
     </>
   );
+};
+
+Dropdown.propTypes = {
+  onChange: PropTypes.func,
+};
+
+Dropdown.defaultProps = {
+  onChange: () => {},
 };
 
 export default Dropdown;

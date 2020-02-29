@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import moment from 'moment';
 import * as Color from './styled/colors';
 import Dropdown from './Dropdown/Dropdown';
-import DownArrow from './Dropdown/Icon/DownArrow';
 
 const Temp = styled.div`
   display: flex;
@@ -40,20 +41,67 @@ const Selector = styled.div`
   border-top: 1px solid ${Color.grayLight};;
 `;
 
-const TimePicker = () => {
-  const a = 5;
+const TimePicker = ({
+  TwelveHours,
+}) => {
+  // Need to decide how to do with hour
+  // Store always into 24h format and display different according with the choice made
+  const [currentHour, setCurrentHour] = useState(moment());
+
+  console.log(currentHour);
+
+  console.log(moment(currentHour.hour(), 'hh'));
+  // console.log(currentHour.minute());
+
+  // hours
+  const itemsHour = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  if (!TwelveHours) {
+    itemsHour.push([13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]);
+  }
+
+  console.log(itemsHour);
+
+  const onChange = (t, h) => {
+    console.log({ t, h });
+    // if (t === 'hour') {
+      setCurrentHour(currentHour.set('hour', h));
+      console.log('SET')
+    // }
+  };
+
+
   return (
-        <ContainerTime>
-          <Title>
-            Select a time
-          </Title>
-          <Selector>
-            <Dropdown
-              items={[1, 2, 3, 4,5 ,6,7,8,9,10,11]}
-            />
-          </Selector>
-        </ContainerTime>
+    <ContainerTime>
+      <Title>
+        Select a time
+      </Title>
+      <Selector>
+        <Dropdown
+          onChange={(h) => onChange('hour', h)}
+          type="hour"
+          items={itemsHour}
+        />
+        <Dropdown
+          type="minute"
+          items={itemsHour}
+        />
+        {TwelveHours && (
+        <Dropdown
+          type="twelveHours"
+          items={['AM', 'PM']}
+        />
+        )}
+      </Selector>
+    </ContainerTime>
   );
+};
+
+TimePicker.propTypes = {
+  TwelveHours: PropTypes.bool,
+};
+
+TimePicker.defaultProps = {
+  TwelveHours: true,
 };
 
 export default TimePicker;
