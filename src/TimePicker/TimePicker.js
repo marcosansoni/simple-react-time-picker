@@ -15,7 +15,7 @@ const ContainerTime = styled.div`
   display: flex;
   flex-direction: column;
   width: fit-content;
-  //height: fit-content;
+  height: fit-content;
   border-radius: 4px;
   border: 1px solid ${Color.grayLight};
   margin: 8px;

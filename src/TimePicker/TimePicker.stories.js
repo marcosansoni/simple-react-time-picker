@@ -9,8 +9,9 @@ const Container = styled.div`
   left: 16px;
   top: 16px;
   display: flex;
-  justify-content: flex-end;
-  align-items: center;
+  //justify-content: flex-end;
+  //align-items: center;
+  padding: 32px;
   width: calc(100% - 32px);
   height: calc(100% - 32px);
   background-color: #F7F7F7;
