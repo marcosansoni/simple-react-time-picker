@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
@@ -7,6 +7,7 @@ import DownArrow from './Icon/DownArrow';
 import UpArrow from './Icon/UpArrow';
 
 import 'react-perfect-scrollbar/dist/css/styles.css';
+import moment from 'moment';
 
 
 const Box = styled.div`
@@ -70,15 +71,22 @@ const ContainerPerfectScrollBar = styled.div`
 const Dropdown = ({
   items,
   onChange,
+  defaultIndex,
 }) => {
+  const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
-  const [indexSelectedItem, setIndexSelectedItem] = useState(0);
+  const [indexSelectedItem, setIndexSelectedItem] = useState(defaultIndex);
 
-  console.log(items)
+  const refBox = useRef(null);
 
   useEffect(() => {
-    console.log('Changed into ', items[indexSelectedItem]);
-    onChange(items[indexSelectedItem]);
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      onChange(items[indexSelectedItem]);
+    }
   }, [indexSelectedItem]);
 
   const cells = items && items.length > 0 && items.map((i, index) => (
@@ -91,19 +99,26 @@ const Dropdown = ({
       isLast={index === items.length - 1}
       isSelected={index === indexSelectedItem}
     >
-      {i}
+      {String(i).padStart(2, '0')}
     </Cell>
   ));
 
   return (
     <>
       <Box
+        tabIndex="0"
+        ref={refBox}
         onClick={() => setOpen(!open)}
+        onBlur={() => setOpen(false)}
       >
-        <ItemDisplayed>
-          {items[indexSelectedItem]}
+        <ItemDisplayed
+          onFocus={() => console.log('3')}
+        >
+          {String(items[indexSelectedItem]).padStart(2, '0')}
         </ItemDisplayed>
-        <ItemDisplayed>
+        <ItemDisplayed
+          onFocus={() => console.log('4')}
+        >
           {!open
             ? (<DownArrow />)
             : (<UpArrow />)}
@@ -112,9 +127,12 @@ const Dropdown = ({
           && items
           && items.length > 0
           && (
-          <DropMenu>
+          <DropMenu
+            onFocus={() => console.log('1')}
+          >
             <ContainerPerfectScrollBar
               items={items}
+              onFocus={() => console.log('2')}
             >
               <PerfectScrollbar>
                 {cells}
@@ -130,10 +148,12 @@ const Dropdown = ({
 
 Dropdown.propTypes = {
   onChange: PropTypes.func,
+  defaultIndex: PropTypes.number,
 };
 
 Dropdown.defaultProps = {
   onChange: () => {},
+  defaultIndex: 0,
 };
 
 export default Dropdown;

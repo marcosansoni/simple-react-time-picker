@@ -44,30 +44,26 @@ const Selector = styled.div`
 const TimePicker = ({
   TwelveHours,
   onChange,
+  title,
 }) => {
   // Need to decide how to do with hour
   // Store always into 24h format and display different according with the choice made
   const [currentHour, setCurrentHour] = useState(moment());
   const [isAM, setIsAm] = useState(true);
 
-  console.log(currentHour);
-
-  console.log(moment(currentHour.hour(), 'hh'));
-  // console.log(currentHour.minute());
-
   // hours
   let itemsHour = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   if (!TwelveHours) {
-    itemsHour = itemsHour.concat([13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]);
+    itemsHour = itemsHour.concat([13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0]);
   }
 
-  console.log(itemsHour);
+  // console.log(itemsHour);
 
   const onChangeFromDropdown = (type, value) => {
     console.log({ type, value });
     switch (type) {
       case 'hour':
-        console.log(isAM);
+        // console.log(isAM);
         // setCurrentHour(moment().set('hour', isAM ? value : value + 12));
         setCurrentHour(moment(currentHour.format('HH:mm'), 'HH:mm').set('hour', isAM ? value : value + 12));
         break;
@@ -75,7 +71,6 @@ const TimePicker = ({
         setCurrentHour(moment(currentHour.format('HH:mm'), 'HH:mm').set('minute', value));
         break;
       case 'twelveHours':
-        console.log(value);
         // console.log('AMMNAMAMA');
         if (value === 'AM') {
           setIsAm(true);
@@ -97,9 +92,7 @@ const TimePicker = ({
   return (
     <ContainerTime>
       <Title>
-        Select a time,
-        {' '}
-        {currentHour.format('HH:mm:ss')}
+        {title || 'Select a time'}
       </Title>
       <Selector>
         <Dropdown
@@ -127,11 +120,13 @@ const TimePicker = ({
 TimePicker.propTypes = {
   TwelveHours: PropTypes.bool,
   onChange: PropTypes.func,
+  title: PropTypes.string,
 };
 
 TimePicker.defaultProps = {
-  TwelveHours: false,
+  TwelveHours: true,
   onChange: () => {},
+  title: null,
 };
 
 export default TimePicker;

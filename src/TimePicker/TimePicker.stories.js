@@ -1,6 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import styled from 'styled-components';
+import { text } from '@storybook/addon-knobs';
 import TimePicker from './TimePicker';
 
 const Container = styled.div`
@@ -19,8 +20,28 @@ const Container = styled.div`
 const stories = storiesOf('Time Picker', module);
 
 
-stories.add('Default', () => (
+stories.add('12 Hour Format', () => (
   <Container>
-    <TimePicker />
+    <TimePicker
+      onChange={(time) => alert(time.format('HH:mm'))}
+    />
+  </Container>
+));
+
+stories.add('24 Hour Format', () => (
+  <Container>
+    <TimePicker
+      TwelveHours={false}
+      onChange={(time) => alert(time.format('HH:mm'))}
+    />
+  </Container>
+));
+
+stories.add('Custom Title', () => (
+  <Container>
+    <TimePicker
+      title="Custom Title"
+      onChange={(time) => alert(time.format('HH:mm'))}
+    />
   </Container>
 ));
