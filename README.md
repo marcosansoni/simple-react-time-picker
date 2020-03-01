@@ -16,6 +16,14 @@ Include component into your project with
 import TimePicker from 'simple-react-time-picker
 ```
 
+Minimum setup for the component is the following
+
+```
+<TimePicker />
+```
+
+With the usage of props `onChange` you can obtain current time selected as a moment.js object.
+
 
 
 
