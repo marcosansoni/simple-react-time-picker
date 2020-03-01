@@ -10,6 +10,7 @@ or
 
 ## Demo
 
+
 A minimal demo is available [here](https://marcosansoni.github.io/simple-react-time-picker/storybook-static/)!
 
 ## Documentation
