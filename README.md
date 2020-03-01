@@ -1,11 +1,11 @@
 Simple Time Picker for react
 
-## Documentation
+### Documentation
 
-### Installation
+#### Installation
 
 Install using 
 
-### `npm i simple-react-time-picker`
+##### `npm i simple-react-time-picker`
 
 Still in progress
