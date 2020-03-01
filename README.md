@@ -11,7 +11,7 @@ or
 ## Demo
 
 
-A minimal demo is available [here](https://marcosansoni.github.io/simple-react-time-picker/storybook-static/)!
+A minimal demo is available [here](https://marcosansoni.github.io/storybook-simple-react-time-picker/demo/)!
 
 ## Documentation
 
