@@ -35,3 +35,7 @@ With the usage of props `onChange` you can obtain current time selected as a mom
 |TwelveHours|Time format, if 12 or 24|true|`true`|
 |title|Title of the Time Picker|`Select a time`|`Select a time`|
 |onChange|Callback trigger at each selection|n/a|n/a|
+|withoutTitle|If it is set to true, title is hidden|false|`true`|
+|mobile|It triggers mobile visualization|false|`true`|
+|vertical|Checkbox are placed vertically|false|`true`|
+|textCentered|Text inside checkbox is centered|false|`true`|

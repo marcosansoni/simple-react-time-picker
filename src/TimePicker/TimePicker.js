@@ -5,21 +5,15 @@ import moment from 'moment';
 import * as Color from './styled/colors';
 import Dropdown from './Dropdown/Dropdown';
 
-const Temp = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-`;
-
 const ContainerTime = styled.div`
   display: flex;
   flex-direction: column;
-  width: fit-content;
-  height: fit-content;
+  width: ${(props) => (props.mobile ? '100%' : 'fit-content')};
+  height: ${(props) => (props.mobile ? '100%' : 'fit-content')};
   border-radius: 4px;
-  border: 1px solid ${Color.grayLight};
-  margin: 8px;
-  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.12);
+  border: ${(props) => !props.mobile && `1px solid ${Color.grayLight}`};
+  margin: ${(props) => !props.mobile && '8px'};
+  box-shadow: ${(props) => !props.mobile && '0px 4px 16px rgba(0, 0, 0, 0.12)'};
 `;
 
 const Title = styled.div`
@@ -29,62 +23,61 @@ const Title = styled.div`
   padding: 24px;
   background-color: white;
   font-family: Roboto;
+  height: ${(props) => (props.mobile && '25%')};
 `;
 
 const Selector = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: ${(props) => (props.mobile || props.vertical) && 'column'};
   padding: 24px;
   background-color: ${Color.whiteDark};
-  font-family: Roboto;
-  border-top: 1px solid ${Color.grayLight};;
+  font-family: Roboto, Serif;
+  border-top: ${(props) => !props.withoutTitle && `1px solid ${Color.grayLight}`};
+  height: ${(props) => (props.mobile && '75%')};
 `;
 
 const TimePicker = ({
   TwelveHours,
   onChange,
   title,
+  withoutTitle,
+  mobile,
+  vertical,
+  textCentered,
 }) => {
   // Need to decide how to do with hour
   // Store always into 24h format and display different according with the choice made
   const [currentHour, setCurrentHour] = useState(moment());
-  const [isAM, setIsAm] = useState(currentHour.format('HH') <= 12);
+  const [isAM, setIsAm] = useState(TwelveHours ? currentHour.format('HH') < 12 : true);
 
-  // hours
-  let itemsHour = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-  if (!TwelveHours) {
-    itemsHour = itemsHour.concat([13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0]);
-  }
+  const twelve = [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+  const twentyfour = Array.from(Array(24).keys());
 
-  // console.log(itemsHour);
+  const itemsHour = TwelveHours ? twelve : twentyfour;
+
 
   const onChangeFromDropdown = (type, value) => {
-    // console.log({ type, value });
-    // const temporaryHour = moment(currentHour.format('HH:mm'), 'HH:mm');
     const temporaryHour = moment(currentHour);
     switch (type) {
       case 'hour':
-        // console.log(isAM);
-        // setCurrentHour(moment().set('hour', isAM ? value : value + 12));
-        // setCurrentHour(moment(currentHour.format('HH:mm'), 'HH:mm').set('hour', isAM ? value : value + 12));
-        temporaryHour.set('hour', isAM ? value : value + 12);
+        if (TwelveHours) {
+          temporaryHour.set('hour', isAM ? value % 12 : ((value % 12) + 12));
+        } else {
+          temporaryHour.set('hour', value);
+        }
         break;
       case 'minute':
-        // setCurrentHour(moment(currentHour.format('HH:mm'), 'HH:mm').set('minute', value));
         temporaryHour.set('minute', value);
         break;
       case 'twelveHours':
-        // console.log('AMMNAMAMA');
         if (value === 'AM') {
           setIsAm(true);
-          // setCurrentHour(moment(currentHour.format('HH:mm'), 'HH:mm').set('hour', currentHour.hour() - 12));
           temporaryHour.set('hour', currentHour.hour() - 12);
         }
-        // console.log('set to false');
         if (value === 'PM') {
           setIsAm(false);
-          // setCurrentHour(moment(currentHour.format('HH:mm'), 'HH:mm').set('hour', currentHour.hour() + 12));
           temporaryHour.set('hour', currentHour.hour() + 12);
         }
         break;
@@ -92,35 +85,50 @@ const TimePicker = ({
         break;
     }
     setCurrentHour(temporaryHour);
-    // console.log(temporaryHour.format('HH:mm'));
     onChange(temporaryHour);
   };
 
 
   return (
-    <ContainerTime>
-      <Title>
+    <ContainerTime
+      mobile={mobile}
+    >
+      {!withoutTitle && (
+      <Title
+        mobile={mobile}
+      >
         {title || 'Select a time'}
       </Title>
-      <Selector>
+      )}
+      <Selector
+        withoutTitle={withoutTitle}
+        mobile={mobile}
+        vertical={vertical}
+      >
         <Dropdown
+          width={mobile && '100%'}
+          centered={mobile || textCentered}
           onChange={(h) => onChangeFromDropdown('hour', h)}
           type="hour"
           items={itemsHour}
-          defaultIndex={currentHour.format('h') - 1}
+          defaultIndex={TwelveHours ? currentHour.format('h') % 12 : Number(currentHour.format('HH'))}
         />
         <Dropdown
+          width={mobile && '100%'}
+          centered={mobile || textCentered}
           type="minute"
           onChange={(h) => onChangeFromDropdown('minute', h)}
           items={Array.from(Array(60).keys())}
-          defaultIndex={currentHour.format('mm')}
+          defaultIndex={Number(currentHour.format('mm'))}
         />
         {TwelveHours && (
         <Dropdown
+          width={mobile && '100%'}
+          centered={mobile || textCentered}
           type="twelveHours"
           onChange={(h) => onChangeFromDropdown('twelveHours', h)}
           items={['AM', 'PM']}
-          defaultIndex={currentHour.format('HH') > 12 && 1}
+          defaultIndex={isAM ? 0 : 1}
         />
         )}
       </Selector>
@@ -132,12 +140,20 @@ TimePicker.propTypes = {
   TwelveHours: PropTypes.bool,
   onChange: PropTypes.func,
   title: PropTypes.string,
+  withoutTitle: PropTypes.bool,
+  mobile: PropTypes.bool,
+  vertical: PropTypes.bool,
+  textCentered: PropTypes.bool,
 };
 
 TimePicker.defaultProps = {
   TwelveHours: true,
   onChange: () => {},
   title: null,
+  withoutTitle: false,
+  mobile: false,
+  vertical: false,
+  textCentered: false,
 };
 
 export default TimePicker;

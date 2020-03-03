@@ -25,13 +25,23 @@ const Box = styled.div`
   margin: 8px;
   box-sizing: border-box;
   cursor:pointer;
+  width: ${(props) => props.width && props.width};
 `;
 
 const ItemDisplayed = styled.div`
   font-size: 16px;
   display: flex;
   align-items: center;
+  justify-content: ${(props) => props.centered && 'center'};
   height: 100%;
+  width: calc(100% - 18px);
+`;
+
+const Icon = styled.div`
+  width: 18px;
+  height: 100%;
+  display: flex;
+  align-items: center;
 `;
 
 const DropMenu = styled.div`
@@ -43,6 +53,7 @@ const DropMenu = styled.div`
   background-color: ${Color.white};
   border: 1px solid ${Color.grayLight};
   box-sizing: border-box;
+  z-index: 5;
   //overflow: hidden;
 `;
 
@@ -72,6 +83,8 @@ const Dropdown = ({
   items,
   onChange,
   defaultIndex,
+  width,
+  centered,
 }) => {
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
@@ -106,23 +119,25 @@ const Dropdown = ({
   return (
     <>
       <Box
+        width={width}
         tabIndex="0"
         ref={refBox}
         onClick={() => setOpen(!open)}
         onBlur={() => setOpen(false)}
       >
         <ItemDisplayed
+          centered={centered}
           onFocus={() => console.log('3')}
         >
           {String(items[indexSelectedItem]).padStart(2, '0')}
         </ItemDisplayed>
-        <ItemDisplayed
+        <Icon
           onFocus={() => console.log('4')}
         >
           {!open
             ? (<DownArrow />)
             : (<UpArrow />)}
-        </ItemDisplayed>
+        </Icon>
         {open
           && items
           && items.length > 0
@@ -149,11 +164,15 @@ const Dropdown = ({
 Dropdown.propTypes = {
   onChange: PropTypes.func,
   defaultIndex: PropTypes.number,
+  width: PropTypes.string,
+  centered: PropTypes.bool,
 };
 
 Dropdown.defaultProps = {
   onChange: () => {},
   defaultIndex: 0,
+  width: '96px',
+  centered: false,
 };
 
 export default Dropdown;
